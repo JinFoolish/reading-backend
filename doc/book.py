@@ -7,4 +7,6 @@ class BookInfo(me.Document):
     cover = me.StringField()
     title = me.StringField(max_length=20)
     author = me.StringField(max_length=20)
-    category = me.StringField()
+    introduce = me.StringField(max_length=300)
+    category = me.EnumField()
+    rating = me.IntField(min_value=0,max_value=10)

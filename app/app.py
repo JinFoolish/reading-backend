@@ -1,20 +1,21 @@
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.dependencies import get_token_authorize
-from app.routers import users, admin
+from app.routers import users, admin, follow
 from app.comm.resp import CommonResponse
 from app.comm import wechatauth
 from app.comm.jwt import Jwt
 from doc.users import User
-import requests
-
 
 app = FastAPI()
 
 
 app.include_router(
     users.router
-    )
+)
+app.include_router(
+    follow.router
+)
 # app.include_router(
 #     admin.router,
 #     prefix="/admin",
@@ -33,8 +34,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/login")
-async def login(code):
+@app.get("/login", summary='give me the code get from wechat oauth')
+async def login(code:str):
     resp = CommonResponse()
     # code = request.args.get('code',None)
     access_data = wechatauth.get_access_token(code)
@@ -77,3 +78,11 @@ async def login(code):
     resp.data = {"token": token.decode('utf-8')}
     return resp.as_dict()
     
+@app.get('/verify',\
+         summary='use this at first each time',\
+         description='''it will return you the user id. 
+         keep it in the gloabal data, almost every api would use it''')
+async def verify(user:dict=Depends(get_token_authorize)):
+    resp = CommonResponse()
+    resp.data = user['user_id']
+    return resp.as_dict()

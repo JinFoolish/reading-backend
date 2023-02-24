@@ -7,6 +7,8 @@ class Book(BaseModel):
     title: str = Field(max_length=20)
     author: str = Field(max_length=20)
     category: str = Field(title='varieties of book')
+    introduce: str = Field(max_length=300)
+    rating: int = Field(ge=0,le=10)
 
 
 class Artic(BaseModel):
