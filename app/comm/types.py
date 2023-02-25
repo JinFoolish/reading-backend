@@ -5,7 +5,7 @@ class FollowStatus(IntEnum):
     FOLLOW_FROM = 2
     FOLLOW_BOTH = 3
 
-class BookCategory(Enum):
+class BookCategoryEnum(Enum):
     TECH = auto()
     #经管
     MANAGE = auto()
@@ -23,3 +23,7 @@ class BookCategory(Enum):
     #文学
     LITERATURE = auto()
     CULTURE = auto()
+
+class LikeStatus(IntEnum):
+    LIKE = 1
+    NOLIKE = 0

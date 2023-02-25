@@ -69,3 +69,8 @@ class Jwt(object):
             return None
 
         return payload  # 返回自定义内容
+
+'''
+test token
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTI4Njk3MjcuMjAxMzMzLCJ1c2VyX2lkIjoiNjNmOWQ2NGQ0YmEyZWM3ZWE3NzI2ZDMzIn0.f8CEEvf-Db-AvPJgh-gmkf0fpKQFBB0Z3wPhmANye4w
+'''

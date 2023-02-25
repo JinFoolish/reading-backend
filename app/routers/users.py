@@ -5,10 +5,13 @@ from bson import ObjectId
 from app.comm.resp import CommonResponse, PageableResponse
 import json
 from typing import List
+from doc.users import UserFollow
+from doc.comment import LikeArticle
 
 router = APIRouter(
     prefix="/users",
-    tags=["users"]
+    tags=["users"],
+    dependencies=[Depends(get_token_authorize)]
 )
 
 @router.get("/me")
@@ -22,11 +25,11 @@ async def read_user_me(user_id:str):
     return resp.as_dict()
 
 @router.post("/batch_me")
-async def read_user(batch:List[str], dependencies=[Depends(get_token_authorize)]):
+async def read_users(batch:List[str]):
     resp = PageableResponse()
     data_info = []
-    for id in batch.id_list:
-        user_info = User.objects(id=ObjectId(id)).only(*['username','avatar']).first()
+    for user_id in batch:
+        user_info = User.objects(id=ObjectId(user_id)).only(*['username','avatar']).first()
         if user_info is None:
             continue
         json_data = user_info.to_json()
@@ -36,3 +39,26 @@ async def read_user(batch:List[str], dependencies=[Depends(get_token_authorize)]
     resp.data = data_info
     return resp.as_dict()
 
+@router.get('/summary')
+async def summ(user_id:str):
+    resp = CommonResponse()
+    data = {}
+    like_count = LikeArticle.objects(user_id=user_id).count()
+    follow_to = UserFollow.objects(user_id=user_id).count()
+    follow_from = UserFollow.objects(follow_id=user_id).count()
+    data['like_count'] = like_count
+    data['follow_to'] = follow_to
+    data['follow_from'] = follow_from
+    resp.data = data
+    return resp.as_dict()
+
+@router.get('/save')
+async def save(username:str, avatar:str):
+    user = User(
+        username=username,
+        avatar=avatar
+    )
+    result = user.save()
+    resp = CommonResponse()
+    resp.data = str(result.id)
+    return resp.as_dict()

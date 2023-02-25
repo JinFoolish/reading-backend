@@ -1,7 +1,10 @@
-from fastapi import Depends, FastAPI
+import uvicorn
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from mongoengine import connect, disconnect
 from app.dependencies import get_token_authorize
-from app.routers import users, admin, follow
+from app.routers import users, admin, follow, book, comment
 from app.comm.resp import CommonResponse
 from app.comm import wechatauth
 from app.comm.jwt import Jwt
@@ -16,6 +19,8 @@ app.include_router(
 app.include_router(
     follow.router
 )
+app.include_router(book.router)
+app.include_router(comment.router)
 # app.include_router(
 #     admin.router,
 #     prefix="/admin",
@@ -33,6 +38,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+mongouri = "mongodb+srv://946623679:wohen22002@dududu.hphggp0.mongodb.net/?retryWrites=true&w=majority"
+
+@app.on_event("startup")
+async def connect_mongodb():
+    connect(host=mongouri)
+
+@app.on_event("shutdown")
+async def disconnect_mongodb():
+    disconnect()
+
+@app.exception_handler(Exception)
+async def unicorn_exception_handler(request: Request, exc:Exception):
+    return JSONResponse(
+        status_code=418,
+        content={"message": f"{str(exc)}. There goes a rainbow..."},
+    )
+
 
 @app.get("/login", summary='give me the code get from wechat oauth')
 async def login(code:str):
@@ -86,3 +108,7 @@ async def verify(user:dict=Depends(get_token_authorize)):
     resp = CommonResponse()
     resp.data = user['user_id']
     return resp.as_dict()
+
+
+if __name__ == '__main__':
+    uvicorn.run("main:app", host="127.0.0.1", port=5000, reload=True)

@@ -13,8 +13,9 @@ class Book(BaseModel):
 
 class Artic(BaseModel):
     detail: str = Field(max_length=500,title='对于图书的书评感想')
-    images: List[str] = []
+    images: List[str] = Field(default=[],title='图片url列表')
     book_title: str = Field(default='',max_length=20)
+    book_id: str = Field(default='')
 
 
 class ArticComm(BaseModel):
