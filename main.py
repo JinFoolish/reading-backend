@@ -1,5 +1,6 @@
 import uvicorn
 from fastapi import Depends, FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from mongoengine import connect, disconnect
@@ -108,6 +109,11 @@ async def verify(user:dict=Depends(get_token_authorize)):
     resp = CommonResponse()
     resp.data = user['user_id']
     return resp.as_dict()
+
+@app.get('/', response_class=HTMLResponse)
+async def index():
+    html_file = open("index.html", 'r').read()
+    return html_file
 
 
 if __name__ == '__main__':
