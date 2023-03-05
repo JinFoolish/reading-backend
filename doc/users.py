@@ -1,7 +1,7 @@
 import mongoengine as me
 
 class User(me.Document):
-    openid = me.StringField()
+    openid = me.StringField(unique=True)
     username = me.StringField()
     # 头像url
     avatar = me.StringField()

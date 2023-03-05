@@ -21,3 +21,11 @@ class Artic(BaseModel):
 class ArticComm(BaseModel):
     comment: str = Field(max_length=200)
     article_id: str = Field(title='objectid of article')
+
+
+class UserInfo(BaseModel):
+    openid: str
+    username: str
+    avatar: str
+    city: str = 'unknown'
+    country: str = '未知的星球'

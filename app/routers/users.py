@@ -7,6 +7,8 @@ import json
 from typing import List
 from doc.users import UserFollow
 from doc.comment import LikeArticle
+from app.comm.post_data import UserInfo
+from app.comm.jwt import Jwt
 
 router = APIRouter(
     prefix="/users",
@@ -52,13 +54,24 @@ async def summ(user_id:str):
     resp.data = data
     return resp.as_dict()
 
-@router.get('/save')
-async def save(username:str, avatar:str):
-    user = User(
-        username=username,
-        avatar=avatar
-    )
+@router.post('/save')
+async def save(user_info: UserInfo):
+    user_info = user_info.dict()
+    user = User(**user_info)
     result = user.save()
     resp = CommonResponse()
     resp.data = str(result.id)
+    return resp.as_dict()
+
+@router.get('/login')
+async def login(openid:str):
+    resp = CommonResponse()
+    user_info = User.objects(openid=openid).first()
+    if user_info:
+        token = Jwt.encode({'user_id': str(user_info.id)},
+                           3600 * 24 * 365)
+        resp.data = {"token": token.decode('utf-8')}
+    else:
+        resp.data = 0
+    
     return resp.as_dict()
