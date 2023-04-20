@@ -39,8 +39,10 @@ async def list_book(cate:Union[str,None]=None,query:PageReq=Depends(PageReq)):
             .exclude('introduce')\
             .skip(rand_choice).limit(query.size)
     for i in data_info:
-        data.append(i.to_mongo().to_dict())
-    resp.data = data
+        d = i.to_mongo().to_dict()
+        d["_id"] = str(d['_id'])
+        data.append(d)
+    resp.list = data
     resp.count = count
     return resp.as_dict()
 
@@ -53,7 +55,6 @@ async def list_user_book(user_id:str, query:PageReq=Depends(PageReq)):
             .skip((query.page - 1) * query.size).limit(query.size)
     for i in data_info:
         d = i.to_mongo().to_dict()
-        d['create_time'] = d['create_time'].strftime('%Y-%m-%d %H:%M:%S')
         d['_id'] = str(d['_id'])
         data.append(d)
     resp.list = data
