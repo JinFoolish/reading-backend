@@ -36,9 +36,9 @@ async def read_users(batch:List[str]):
             continue
         json_data = user_info.to_json()
         json_dict = json.loads(json_data)
-        json_dict['user_id'] = id
+        json_dict['user_id'] = user_id
         data_info.append(json_dict)
-    resp.data = data_info
+    resp.list = data_info
     return resp.as_dict()
 
 @router.get('/summary')
