@@ -1,3 +1,5 @@
+from random import randint
+
 import uvicorn
 from fastapi import Depends, FastAPI, Request
 from fastapi.responses import HTMLResponse
@@ -75,7 +77,7 @@ async def login(code: str):
     new_user.username = '默认用户'
     new_user.city = '默认地区'
     new_user.country = '中国'
-    new_user.avatar = ''
+    new_user.avatar = str(randint(1, 148))
     result = new_user.save()
     resp.msg = 'new user'
     token = Jwt.encode({'user_id': str(result.id)},

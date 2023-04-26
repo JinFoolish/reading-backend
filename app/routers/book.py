@@ -62,7 +62,7 @@ async def list_user_book(user_id:str, query:PageReq=Depends(PageReq)):
     return resp.as_dict()
 
 
-@router.get('/batch_list',
+@router.post('/batch_list',
             summary="use to get book info in the user's LIKE",
             description='''
                 give a list of book id
@@ -71,12 +71,13 @@ async def batch_list(batch:List[str]):
     resp = PageableResponse()
     data_info = []
     for book_id in batch:
-        book_info = Book.objects(id=ObjectId(book_id)).exclude('introduce').first()
+        book_info = BookInfo.objects(id=ObjectId(book_id)).exclude('introduce').first()
         if book_info is None:
             continue
         data = book_info.to_mongo().to_dict()
+        data['_id'] = str(data['_id'])
         data_info.append(data)
-    resp.data = data_info
+    resp.list = data_info
     return resp.as_dict()
 
 @router.get('/categories', summary='return type of categories')
@@ -101,10 +102,12 @@ async def create(user_id:str, book:Book):
 async def detail(book_id:str):
     resp = CommonResponse()
     data = BookInfo.objects(id=ObjectId(book_id)).first()
-    resp.data = data.to_mongo().to_dict()
+    d = data.to_mongo().to_dict()
+    d['_id'] = str(d['_id'])
+    resp.data = d
     return resp.as_dict()
 
-@router.get('/judge')
+@router.post('/judge')
 async def judge(user_id:str, batch:List[str]):
     resp = PageableResponse()
     data_info = []
@@ -115,10 +118,12 @@ async def judge(user_id:str, batch:List[str]):
         d['count'] = count
         if exists:
             d[book_id] = LikeStatus.LIKE.value
+            d['islike'] = True
         else:
             d[book_id] = LikeStatus.NOLIKE.value
+            d['islike'] = False
         data_info.append(d)
-    resp.data = data_info
+    resp.list = data_info
     return resp.as_dict()
 
 @router.get('/users', summary='get books liked by a user')
@@ -129,7 +134,7 @@ async def users(user_id:str, query:PageReq=Depends(PageReq)):
         .skip((query.page - 1) * query.size).limit(query.size)
     for b in b_list:
         data.append(b.book_id)
-    resp.data = data
+    resp.list = data
     resp.count = UserBook.objects(user_id=user_id).count()
     return resp.as_dict()
 
