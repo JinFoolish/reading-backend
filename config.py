@@ -1,5 +1,5 @@
 # db config
-MONGOURI = "mongodb://localhost:27017"
+MONGOURI = "mongodb://admin:admin@localhost:27017"
 
 # miniprogram config,just for test
 APPID = 'wx231a4dd8d3c09136'
