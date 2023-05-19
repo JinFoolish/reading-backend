@@ -7,7 +7,7 @@ workers = multiprocessing.cpu_count() * 2 + 1
 # workers = 2
 
 # 还可以使用 gevent 模式，还可以使用sync模式，默认sync模式
-worker_class = 'uvicron.workers.UvicornWorker'
+worker_class = 'uvicorn.workers.UvicornWorker'
 
 # 指定每个工作者的线程数
 threads = 1
