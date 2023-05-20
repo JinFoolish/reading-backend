@@ -25,3 +25,8 @@ class LikeComment(me.Document):
     comment_id = me.StringField()
 
 
+# 定义相似度Schema
+class Similarity(me.Document):
+    article_id1 = me.StringField()
+    article_id2 = me.StringField()
+    score = me.FloatField()
