@@ -2,12 +2,12 @@ import mongoengine as me
 
 class BookInfo(me.Document):
     user_id = me.StringField()
-    sentence = me.StringField(max_length=50)
+    sentence = me.StringField(max_length=1000)
     # 书的封面
     cover = me.StringField()
-    title = me.StringField(max_length=20)
-    author = me.StringField(max_length=20)
-    introduce = me.StringField(max_length=300)
+    title = me.StringField(max_length=200)
+    author = me.StringField(max_length=200)
+    introduce = me.StringField(max_length=3000)
     category = me.StringField(max_length=20)
     rating = me.IntField(min_value=0,max_value=5)
     create_time = me.DateTimeField()
