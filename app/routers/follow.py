@@ -28,9 +28,10 @@ async def follow_user(follow_id:str, user_id:str):
     resp.data = str(result.id)
     return resp.as_dict()
 
-@router.delete('/delete')
+@router.get('/delete')
 async def delete_user(follow_id:str, user_id:str):
     UserFollow.objects(user_id=user_id,follow_id=follow_id).delete()
+    return {}
 
 @router.get('/list')
 async def follow_list(user_id:str, query:PageReq=Depends(PageReq)):
