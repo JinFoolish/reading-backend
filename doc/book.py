@@ -11,3 +11,8 @@ class BookInfo(me.Document):
     category = me.StringField(max_length=20)
     rating = me.IntField(min_value=0,max_value=5)
     create_time = me.DateTimeField()
+
+class BookSim(me.Document):
+    book_id1 = me.StringField()
+    book_id2 = me.StringField()
+    scrore = me.FloatField()
